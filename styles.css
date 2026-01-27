@@ -17,8 +17,16 @@ body {
   padding: 30px;
   border-radius: 20px;
   width: 100%;
-  max-width: 420px;
+  max-width: 540px;
   text-align: center;
+  justify-content: center;
+}
+
+.gif_container {
+    width:220px ;
+    display: block;
+    justify-content: center;
+    align-items: center;
 }
 
 input {

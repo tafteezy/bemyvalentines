@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Valentine Link 💌</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="card">
+  <h1>Create a Valentine Link 💖</h1>
+
+  <input id="senderName" placeholder="Your name 💌">
+  <input id="senderEmail" type="email" placeholder="Your email (you get the response)">
+  <input id="recipientName" placeholder="Their name 💘">
+
+  <button onclick="generateLink()">Generate Link</button>
+
+  <p id="result"></p>
+</div>
+
+<script>
+function generateLink() {
+  const senderName = senderNameInput.value.trim();
+  const senderEmail = senderEmailInput.value.trim();
+  const recipientName = recipientNameInput.value.trim();
+
+  if (!senderName || !senderEmail || !recipientName) {
+    alert("Fill in all fields 💌");
+    return;
+  }
+
+  const params = new URLSearchParams({
+    senderName,
+    senderEmail,
+    recipientName
+  });
+
+  const link = `${window.location.origin}/valentine.html?${params}`;
+
+    result.innerHTML = `
+    💖 Link ready! <br><br>
+
+    <a href="${link}" target="_blank">${link}</a><br><br>
+
+    <button onclick="shareWhatsApp('${link}')">
+        Share on WhatsApp 💬
+    </button>
+
+    <p>Send this link to <b>${recipientName}</b></p>
+    `;
+
+}
+
+function shareWhatsApp(link) {
+  const message = `💘 I have a question for you...\n\nClick here 👉 ${link}`;
+  const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+}
+
+
+const senderNameInput = document.getElementById("senderName");
+const senderEmailInput = document.getElementById("senderEmail");
+const recipientNameInput = document.getElementById("recipientName");
+const result = document.getElementById("result");
+</script>
+
+</body>
+</html>

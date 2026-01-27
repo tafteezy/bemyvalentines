@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yay 💖</title>
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="card">
+  <h1>yeeeey!!! 💕</h1>
+
+  <p>
+    You just made someone very happy 🥹💖  
+    Want to send them a little message?
+  </p>
+
+  <div class="gif_container">
+    <img src="https://media0.giphy.com/media/T86i6yDyoYz7J6dPhf/giphy.gif" alt="gif">
+  </div>
+
+</div>
+
+<script>
+/* 🔑 EmailJS */
+emailjs.init("Ndod5dyOtljVUc_XI");
+
+/* Get sender info from URL */
+const params = new URLSearchParams(window.location.search);
+const senderName = params.get("senderName");
+const senderEmail = params.get("senderEmail");
+const recipientName = params.get("recipientName");
+
+/* 💖 Floating hearts generator */
+setInterval(() => {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => heart.remove(), 6000);
+}, 400);
+
+
+</script>
+
+</body>
+</html>

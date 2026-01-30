@@ -37,8 +37,10 @@ function generateLink() {
     recipient: recipientName
   });
 
-  // Fixed: Now points to valentine.html with query parameters
-  const link = `${window.location.origin}/valentine.html?${params}`;
+  // Fixed: Uses the current page's path to automatically get the correct base URL
+  const pathArray = window.location.pathname.split('/');
+  const basePath = pathArray.slice(0, -1).join('/');
+  const link = `${window.location.origin}${basePath}/valentine.html?${params}`;
 
     result.innerHTML = `
     💖 Link ready! <br><br>
@@ -69,5 +71,3 @@ const result = document.getElementById("result");
 
 </body>
 </html>
-```
-

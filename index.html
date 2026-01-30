@@ -32,11 +32,12 @@ function generateLink() {
   }
 
   const params = new URLSearchParams({
-    senderName,
-    senderEmail,
-    recipientName
+    sender: senderName,
+    email: senderEmail,
+    recipient: recipientName
   });
 
+  // Fixed: Now points to valentine.html with query parameters
   const link = `${window.location.origin}/valentine.html?${params}`;
 
     result.innerHTML = `
@@ -44,7 +45,7 @@ function generateLink() {
 
     <a href="${link}" target="_blank">${link}</a><br><br>
 
-    <button onclick="shareWhatsApp('${link}')">
+    <button onclick="shareWhatsApp('${encodeURIComponent(link)}')">
         Share on WhatsApp 💬
     </button>
 
@@ -68,3 +69,5 @@ const result = document.getElementById("result");
 
 </body>
 </html>
+```
+

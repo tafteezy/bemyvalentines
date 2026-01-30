@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why No? 💔</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="card">
+  <h1>💔 Oh no...</h1>
+  <p style="font-size: 18px; margin: 20px 0;">Please tell us why you said no:</p>
+  
+  <div style="text-align: left; margin: 20px 0;">
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="I'm not interested" style="width: auto; margin-right: 10px;">
+      I'm not interested
+    </label>
+    
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="I'm already in a relationship" style="width: auto; margin-right: 10px;">
+      I'm already in a relationship
+    </label>
+    
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="I see you as a friend" style="width: auto; margin-right: 10px;">
+      I see you as a friend
+    </label>
+    
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="I'm not ready for a relationship" style="width: auto; margin-right: 10px;">
+      I'm not ready for a relationship
+    </label>
+    
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="I need more time to think" style="width: auto; margin-right: 10px;">
+      I need more time to think
+    </label>
+    
+    <label style="display: block; margin: 10px 0; cursor: pointer;">
+      <input type="radio" name="reason" value="other" style="width: auto; margin-right: 10px;">
+      Other (please specify below)
+    </label>
+  </div>
+  
+  <div class="message-box">
+    <textarea id="additionalMessage" rows="4"
+      placeholder="Any additional message? (optional) 💭"></textarea>
+  </div>
+  
+  <button class="send-btn" onclick="sendNoResponse()">Send Response 💌</button>
+  
+  <p id="msg" style="margin-top: 15px;"></p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const senderName = params.get("sender");
+const senderEmail = params.get("email");
+const recipientName = params.get("recipient");
+
+if (!senderName || !senderEmail || !recipientName) {
+  document.querySelector("h1").innerText = "❌ Invalid link";
+  document.querySelector("p").innerText = "This link is invalid or incomplete.";
+}
+
+function sendNoResponse() {
+  const selectedReason = document.querySelector('input[name="reason"]:checked');
+  const additionalMessage = document.getElementById("additionalMessage").value.trim();
+  
+  if (!selectedReason) {
+    alert("Please select a reason 💭");
+    return;
+  }
+  
+  const msg = document.getElementById("msg");
+  msg.innerText = "Sending... 💌";
+  
+  const payload = {
+    senderName,
+    senderEmail,
+    recipientName,
+    response: "NO 💔",
+    reason: selectedReason.value,
+    replyMessage: additionalMessage || "No additional message"
+  };
+
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec";
+  
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = scriptUrl;
+  form.target = 'hidden_iframe';
+  
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(payload);
+  form.appendChild(input);
+  
+  const iframe = document.createElement('iframe');
+  iframe.name = 'hidden_iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  document.body.appendChild(form);
+  
+  form.submit();
+  
+  setTimeout(() => {
+    msg.innerText = "Response sent 💌";
+    msg.style.color = "green";
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 2000);
+  }, 1500);
+}
+</script>
+</body>
+</html>

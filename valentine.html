@@ -28,44 +28,59 @@
 </div>
 
 <script>
-emailjs.init("Ndod5dyOtljVUc_XI"); 
 
 const params = new URLSearchParams(window.location.search);
+
 const senderName = params.get("senderName");
 const senderEmail = params.get("senderEmail");
 const recipientName = params.get("recipientName");
 
-document.getElementById("title").innerText =
-  `Will you be my Valentine, ${recipientName}? 💘`;
+if (!senderName || !senderEmail || !recipientName) {
+  document.getElementById("title").innerText =
+    "❌ Invalid or incomplete Valentine link";
+}
 
 function respond(answer) {
   const reply = document.getElementById("replyMessage").value.trim();
 
-  emailjs.send("service_rw76p7z", "template_fsjww7j", {
-    sender_name: senderName,
-    sender_email: senderEmail,
-    recipient_name: recipientName,
-    response: answer,
-    reply_message: reply || "No message, just love 💕"
+  fetch("https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      senderName,
+      senderEmail,
+      recipientName,
+      response: answer,
+      replyMessage: reply
+    })
   })
-  .then(() => {
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert("Email failed 😢");
+      return;
+    }
+
     if (answer.includes("YES")) {
-      const params = new URLSearchParams({
+      const nextParams = new URLSearchParams({
         senderName,
-        senderEmail,
         recipientName,
         replyMessage: reply
       });
-      window.location.href = `yes.html?${params}`;
+
+      window.location.href = `yes.html?${nextParams.toString()}`;
     } else {
       msg.innerText = "Response sent 💌";
     }
   })
   .catch(err => {
     console.error(err);
-    alert("Email failed 😢");
+    alert("Connection error 😢");
   });
 }
+
 
 
 

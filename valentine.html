@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine 💘</title>
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body>
 <div class="card">
@@ -22,55 +21,69 @@
 </div>
 <script>
 const params = new URLSearchParams(window.location.search);
-const senderName = params.get("sender");  // Changed from "senderName"
-const senderEmail = params.get("email");  // Changed from "senderEmail"
-const recipientName = params.get("recipient");  // Changed from "recipientName"
+const senderName = params.get("sender");
+const senderEmail = params.get("email");
+const recipientName = params.get("recipient");
 
 if (!senderName || !senderEmail || !recipientName) {
   document.getElementById("title").innerText =
     "❌ Invalid or incomplete Valentine link";
 } else {
-  // Show personalized message if parameters are valid
   document.getElementById("title").innerText =
     `${recipientName}, will you be my Valentine? 💘`;
 }
 
 function respond(answer) {
   const reply = document.getElementById("replyMessage").value.trim();
-  fetch("https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      senderName,
-      senderEmail,
-      recipientName,
-      response: answer,
-      replyMessage: reply
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.success) {
-      alert("Email failed 😢");
-      return;
-    }
+  
+  msg.innerText = "Sending... 💌";
+  
+  const payload = {
+    senderName,
+    senderEmail,
+    recipientName,
+    response: answer,
+    replyMessage: reply
+  };
+
+  // Use JSONP callback approach for Google Apps Script
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec";
+  
+  // Create a form and submit it
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = scriptUrl;
+  form.target = 'hidden_iframe';
+  
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(payload);
+  form.appendChild(input);
+  
+  // Create hidden iframe to handle response
+  const iframe = document.createElement('iframe');
+  iframe.name = 'hidden_iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  document.body.appendChild(form);
+  
+  // Submit the form
+  form.submit();
+  
+  // Wait a bit then redirect (since we can't get confirmation)
+  setTimeout(() => {
     if (answer.includes("YES")) {
       const nextParams = new URLSearchParams({
-        senderName,
-        recipientName,
-        replyMessage: reply
+        sender: senderName,
+        recipient: recipientName,
+        message: reply
       });
       window.location.href = `yes.html?${nextParams.toString()}`;
     } else {
       msg.innerText = "Response sent 💌";
     }
-  })
-  .catch(err => {
-    console.error(err);
-    alert("Connection error 😢");
-  });
+  }, 1500);
 }
 
 const noBtn = document.getElementById("noBtn");

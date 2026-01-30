@@ -15,11 +15,23 @@
   </div>
   <div class="buttons">
     <button class="yes" onclick="respond('YES 💖')">Yes 💖</button>
-    <button class="no" id="noBtn">No 😢</button>
+    <button class="no" id="noBtn">No 💔</button>
   </div>
   <p id="msg"></p>
 </div>
 <script>
+const NO_PHRASES = [
+  "No 💔",
+  "Pretty please? 🥺",
+  "But we'd be so cute together! 💕",
+  "One more chance, pookie?",
+  "Don't break my heart :(",
+  "What about a maybe?",
+  "Please don't do this to me, I'm fragile"
+];
+
+let noClickCount = 0;
+
 const params = new URLSearchParams(window.location.search);
 const senderName = params.get("sender");
 const senderEmail = params.get("email");
@@ -46,10 +58,8 @@ function respond(answer) {
     replyMessage: reply
   };
 
-  // Use JSONP callback approach for Google Apps Script
   const scriptUrl = "https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec";
   
-  // Create a form and submit it
   const form = document.createElement('form');
   form.method = 'POST';
   form.action = scriptUrl;
@@ -61,17 +71,14 @@ function respond(answer) {
   input.value = JSON.stringify(payload);
   form.appendChild(input);
   
-  // Create hidden iframe to handle response
   const iframe = document.createElement('iframe');
   iframe.name = 'hidden_iframe';
   iframe.style.display = 'none';
   document.body.appendChild(iframe);
   document.body.appendChild(form);
   
-  // Submit the form
   form.submit();
   
-  // Wait a bit then redirect (since we can't get confirmation)
   setTimeout(() => {
     if (answer.includes("YES")) {
       const nextParams = new URLSearchParams({
@@ -91,6 +98,16 @@ noBtn.addEventListener("mouseenter", dodge);
 noBtn.addEventListener("touchstart", dodge);
 
 function dodge() {
+  // Change the button text to next phrase
+  noClickCount++;
+  if (noClickCount < NO_PHRASES.length) {
+    noBtn.innerText = NO_PHRASES[noClickCount];
+  } else {
+    // Loop back to start or keep last phrase
+    noBtn.innerText = NO_PHRASES[NO_PHRASES.length - 1];
+  }
+  
+  // Move the button
   const x = Math.random() * 200 - 100;
   const y = Math.random() * 200 - 100;
   noBtn.style.transform = `translate(${x}px, ${y}px)`;

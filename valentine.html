@@ -15,7 +15,7 @@
   </div>
   <div class="buttons">
     <button class="yes" onclick="respond('YES 💖')">Yes 💖</button>
-    <button class="no" id="noBtn">No 💔</button>
+    <button class="no" id="noBtn" onclick="goToNoPage()">No 💔</button>
   </div>
   <p id="msg"></p>
 </div>
@@ -31,6 +31,7 @@ const NO_PHRASES = [
 ];
 
 let noClickCount = 0;
+let noDodgeCount = 0;
 
 const params = new URLSearchParams(window.location.search);
 const senderName = params.get("sender");
@@ -93,24 +94,48 @@ function respond(answer) {
   }, 1500);
 }
 
+function goToNoPage() {
+  // Only allow clicking after they've dodged it enough times
+  if (noDodgeCount >= 3) {
+    const nextParams = new URLSearchParams({
+      sender: senderName,
+      email: senderEmail,
+      recipient: recipientName
+    });
+    window.location.href = `no.html?${nextParams.toString()}`;
+  }
+}
+
 const noBtn = document.getElementById("noBtn");
 noBtn.addEventListener("mouseenter", dodge);
 noBtn.addEventListener("touchstart", dodge);
 
-function dodge() {
+function dodge(e) {
+  // Prevent default to stop the button from being clicked immediately
+  if (noDodgeCount < 3) {
+    e.preventDefault();
+  }
+  
+  noDodgeCount++;
+  
   // Change the button text to next phrase
-  noClickCount++;
-  if (noClickCount < NO_PHRASES.length) {
+  if (noClickCount < NO_PHRASES.length - 1) {
+    noClickCount++;
     noBtn.innerText = NO_PHRASES[noClickCount];
   } else {
-    // Loop back to start or keep last phrase
     noBtn.innerText = NO_PHRASES[NO_PHRASES.length - 1];
   }
   
-  // Move the button
-  const x = Math.random() * 200 - 100;
-  const y = Math.random() * 200 - 100;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  // Move the button (only first 3 times)
+  if (noDodgeCount < 3) {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  } else {
+    // After 3 dodges, reset position and allow click
+    noBtn.style.transform = 'translate(0, 0)';
+    noBtn.innerText = "Fine... No 😢";
+  }
 }
 
 const msg = document.getElementById("msg");

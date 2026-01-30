@@ -8,41 +8,35 @@
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body>
-
 <div class="card">
   <h1 id="title">Will you be my Valentine? 💘</h1>
-
    <div class="message-box">
     <textarea id="replyMessage" rows="4"
       placeholder="Type a sweet message here... 💌 (optional)"></textarea>
-
   </div>
-
-
   <div class="buttons">
     <button class="yes" onclick="respond('YES 💖')">Yes 💖</button>
     <button class="no" id="noBtn">No 😢</button>
   </div>
-
   <p id="msg"></p>
 </div>
-
 <script>
-
 const params = new URLSearchParams(window.location.search);
-
-const senderName = params.get("senderName");
-const senderEmail = params.get("senderEmail");
-const recipientName = params.get("recipientName");
+const senderName = params.get("sender");  // Changed from "senderName"
+const senderEmail = params.get("email");  // Changed from "senderEmail"
+const recipientName = params.get("recipient");  // Changed from "recipientName"
 
 if (!senderName || !senderEmail || !recipientName) {
   document.getElementById("title").innerText =
     "❌ Invalid or incomplete Valentine link";
+} else {
+  // Show personalized message if parameters are valid
+  document.getElementById("title").innerText =
+    `${recipientName}, will you be my Valentine? 💘`;
 }
 
 function respond(answer) {
   const reply = document.getElementById("replyMessage").value.trim();
-
   fetch("https://script.google.com/macros/s/AKfycbyFnmPWApwcHWRP_9HT3TdS4i85NuZzZHJTuPHk-2osXvUx6UYIc1IwpdyuRf_RLf0l/exec", {
     method: "POST",
     headers: {
@@ -62,14 +56,12 @@ function respond(answer) {
       alert("Email failed 😢");
       return;
     }
-
     if (answer.includes("YES")) {
       const nextParams = new URLSearchParams({
         senderName,
         recipientName,
         replyMessage: reply
       });
-
       window.location.href = `yes.html?${nextParams.toString()}`;
     } else {
       msg.innerText = "Response sent 💌";
@@ -81,26 +73,17 @@ function respond(answer) {
   });
 }
 
-
-
-
 const noBtn = document.getElementById("noBtn");
-
-
 noBtn.addEventListener("mouseenter", dodge);
-
 noBtn.addEventListener("touchstart", dodge);
 
 function dodge() {
   const x = Math.random() * 200 - 100;
   const y = Math.random() * 200 - 100;
-
   noBtn.style.transform = `translate(${x}px, ${y}px)`;
 }
 
-
 const msg = document.getElementById("msg");
 </script>
-
 </body>
 </html>
